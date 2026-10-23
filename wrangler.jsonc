@@ -2,7 +2,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "xiaozhou-title",
   "main": "worker.mjs",
-  "compatibility_date": "2026-10-24",
+  "compatibility_date": "2026-10-01",
   "workers_dev": true,
   "build": {
     "command": "node scripts/build-cloudflare.js"
