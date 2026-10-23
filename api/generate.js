@@ -6,7 +6,7 @@ function send(res, status, body) {
   res.setHeader('Cache-Control', 'no-store');
   res.end(JSON.stringify(body));
 }
-module.exports = async function handler(req, res) {
+module.exports = async function handler(req, res, env = process.env) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return send(res, 405, { error: '请使用生成标题按钮提交。' });
@@ -21,8 +21,8 @@ module.exports = async function handler(req, res) {
   if (typeof selling_point !== 'string' || !selling_point.trim() || [...selling_point].length > 100)
     return send(res, 400, { error: '请填写核心卖点，最多 100 字。' });
   if (!stages.has(stage)) return send(res, 400, { error: '营销段请选择认知、兴趣、购买或忠诚。' });
-  const base = process.env.DIFY_API_BASE?.trim();
-  const key = process.env.DIFY_API_KEY?.trim();
+  const base = env.DIFY_API_BASE?.trim();
+  const key = env.DIFY_API_KEY?.trim();
   if (!base || !key) return send(res, 503, { error: '服务尚未配置完成，请联系管理员。' });
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 60000);

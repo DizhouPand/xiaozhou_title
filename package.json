@@ -5,7 +5,8 @@
   "description": "小红书标题生成器，通过服务端调用 Dify 工作流",
   "scripts": {
     "start": "node server.js",
-    "dev": "node dev-server.js"
+    "dev": "node dev-server.js",
+    "build:cloudflare": "node scripts/build-cloudflare.js"
   },
   "engines": {
     "node": "22.x"

@@ -4,3 +4,8 @@ local.env
 .vercel/
 node_modules/
 .DS_Store
+
+.wrangler/
+.dev.vars
+.dev.vars.*
+dist/
