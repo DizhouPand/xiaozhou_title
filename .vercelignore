@@ -1,0 +1,7 @@
+local.env
+.env
+.env.*
+.git/
+dev-server.js
+*.yml
+*.yaml

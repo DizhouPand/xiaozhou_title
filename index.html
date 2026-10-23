@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>小红书标题生成器</title>
+<style>
+:root{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;color:#28272b;background:#faf8f5;color-scheme:light}*{box-sizing:border-box}body{margin:0}main{max-width:760px;margin:0 auto;padding:44px 24px 30px}.brand{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:650;letter-spacing:1px}.mark{display:grid;place-items:center;background:#ed4b60;color:white;border-radius:10px;width:32px;height:32px;font-size:20px}.intro{margin:48px 0 28px}.eyebrow{color:#ce4154;font-size:12px;font-weight:700;letter-spacing:2px}h1{font-size:clamp(28px,6vw,40px);letter-spacing:-1px;margin:12px 0}p{line-height:1.8;color:#77747b;margin:0}.card{padding:30px;background:white;border:1px solid #eae5df;border-radius:22px;box-shadow:0 12px 40px #44301b06}.field{margin-bottom:24px}label{display:block;font-size:14px;font-weight:650;margin-bottom:9px}.hint{display:flex;justify-content:space-between;gap:12px;font-size:12px;color:#89858a;margin-top:7px}input,textarea,select{width:100%;font:inherit;font-size:15px;border:1px solid #dedad5;border-radius:11px;background:#fffeff;padding:13px 14px;color:#28272b;outline:none;transition:border-color .2s,box-shadow .2s}textarea{resize:vertical;min-height:112px;line-height:1.7}input:focus,textarea:focus,select:focus{border-color:#ed7282;box-shadow:0 0 0 3px #ed4b6015}button{font:inherit;cursor:pointer;border:0;border-radius:11px;font-weight:650;transition:background .2s}button:focus-visible{outline:3px solid #e993a1;outline-offset:3px}.generate{width:100%;background:#e94c62;color:white;padding:15px;font-size:15px}.generate:hover{background:#d83e54}button:disabled{opacity:.65;cursor:wait}.note{text-align:center;font-size:12px;margin-top:12px;color:#99939a}.result{margin-top:22px;padding:24px;border-radius:16px;border:1px solid}.safe{background:#f0f8f2;border-color:#bcdbc4;color:#246340}.review{background:#fff7e9;border-color:#efcf96;color:#8b551a}.result h2{font-size:15px;margin:0 0 16px}.title{font-size:22px;line-height:1.6;font-weight:650;white-space:pre-wrap;overflow-wrap:anywhere;color:inherit}.copy{margin-top:18px;background:white;border:1px solid #bfd5c5;color:#246340;padding:10px 16px;font-size:13px}.caption{font-size:12px;opacity:.75;margin:15px 0 5px}.verdict{white-space:pre-wrap;overflow-wrap:anywhere}.error{margin-top:18px;color:#b32f46;font-size:14px;line-height:1.6}footer{display:flex;justify-content:space-between;margin-top:24px;font-size:11px;color:#a29ba1;gap:12px}[hidden]{display:none!important}@media(max-width:520px){main{padding:24px 16px}.intro{margin-top:34px}.card{padding:22px 18px;border-radius:18px}.result{padding:20px}.title{font-size:20px}footer{font-size:10px}}
+</style>
+</head>
+<body><main>
+<div class="brand"><span class="mark" aria-hidden="true">✳</span> 小周的内容工作台</div>
+<header class="intro"><div class="eyebrow">灵感，从一个好标题开始</div><h1>小红书标题生成器<span style="color:#e94c62">。</span></h1><p>说清商品与卖点，把下一句好标题交给灵感。</p></header>
+<section class="card" aria-label="标题生成表单">
+<form id="form">
+<div class="field"><label for="product">商品名</label><input id="product" name="product_name" required placeholder="例如：禾予无线洗地机" autocomplete="off"><div class="hint"><span>一个具体的商品，表达更有方向</span><span id="product-count">0 / 30</span></div></div>
+<div class="field"><label for="selling">核心卖点</label><textarea id="selling" name="selling_point" required placeholder="例如：滚刷免工具拆洗，清洁后轻松取下冲洗。"></textarea><div class="hint"><span>写下最想让用户记住的亮点</span><span id="selling-count">0 / 100</span></div></div>
+<div class="field"><label for="stage">营销段</label><select id="stage" name="stage"><option value="认知">认知 · 让用户认识商品</option><option value="兴趣">兴趣 · 激发进一步了解</option><option value="购买">购买 · 推动下单决策</option><option value="忠诚">忠诚 · 与老用户保持连接</option></select></div>
+<button class="generate" id="generate" type="submit">生成标题 ↗</button><p class="note">一点灵感，一次表达。生成结果会经过工作流判断。</p>
+</form>
+<div id="error" class="error" role="alert" hidden></div>
+<section id="result" class="result" aria-live="polite" aria-atomic="true" hidden><h2 id="result-heading"></h2><div id="draft-label" class="caption" hidden>草稿标题</div><div id="title" class="title"></div><div id="verdict-block" hidden><div class="caption">判断结果</div><div id="verdict" class="verdict"></div></div><button id="copy" class="copy" type="button" hidden>复制标题</button></section>
+</section><footer><span>为每个营销阶段，找到合适的表达</span><span>小周 · 内容工具</span></footer>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+for (const [id, max] of [['product', 30], ['selling', 100]]) {
+  $(id).addEventListener('input', () => {
+    const length = [...$(id).value].length;
+    $(id + '-count').textContent = `${length} / ${max}`;
+    $(id).setCustomValidity(length > max ? `最多填写 ${max} 字` : '');
+  });
+}
+$('form').addEventListener('submit', async event => {
+  event.preventDefault();
+  if ($('generate').disabled) return;
+  $('error').hidden = true; $('result').hidden = true;
+  $('generate').disabled = true; $('generate').textContent = '生成中';
+  $('form').setAttribute('aria-busy', 'true');
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 60000);
+  try {
+    const response = await fetch('/api/generate', { method: 'POST', signal: controller.signal,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ product_name: $('product').value, selling_point: $('selling').value, stage: $('stage').value }) });
+    let data;
+    try { data = await response.json(); } catch { throw new Error('生成暂时失败，请稍后重试。'); }
+    if (!response.ok) throw new Error(typeof data.error === 'string' ? data.error : '生成暂时失败，请稍后重试。');
+    if (!['safe', 'review'].includes(data.type)) throw new Error('生成暂时失败，请稍后重试。');
+    const safe = data.type === 'safe';
+    $('result').className = 'result ' + (safe ? 'safe' : 'review');
+    $('result-heading').textContent = safe ? '✓ 标题已生成 · 安全' : '需要人工复核';
+    $('title').textContent = safe ? data.title : data.draft;
+    $('verdict').textContent = safe ? '' : data.verdict;
+    $('draft-label').hidden = safe; $('verdict-block').hidden = safe;
+    $('copy').hidden = !safe; $('copy').textContent = '复制标题';
+    $('result').hidden = false;
+  } catch (error) {
+    $('error').textContent = controller.signal.aborted ? '请再试一次' : error instanceof TypeError ? '网络连接失败，请再试一次。' : error.message;
+    $('error').hidden = false;
+  } finally {
+    clearTimeout(timer); $('generate').disabled = false; $('generate').textContent = '生成标题 ↗'; $('form').removeAttribute('aria-busy');
+  }
+});
+$('copy').addEventListener('click', async () => {
+  try { await navigator.clipboard.writeText($('title').textContent); $('copy').textContent = '已复制 ✓'; }
+  catch { $('copy').textContent = '复制失败，请长按标题复制'; }
+});
+</script></body></html>
